@@ -11,8 +11,6 @@ swank/
 /ac-comphist.dat
 /tramp
 /session*
-/pre-startup.el
-/post-startup.el
 /rcirc-log
 /abbrev_defs
 bin/emms-print-metadata
@@ -28,3 +26,6 @@ semanticdb/
 el-get/
 /.mc-lists.el
 var/
+/python.el
+/python.elc
+/projectile-bookmarks.eld
