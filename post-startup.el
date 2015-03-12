@@ -1,5 +1,12 @@
 ;;; s-WinKey // M-AltKey // C-CtrlKey //S-ShitfKey
 
+(load-theme 'manoj-dark t)
+
+
+;;; key binding
+(global-set-key (kbd "C-<f2>") (lambda() (interactive) (kill-ring-save-file-name 5)))
+
+
 ;;;python setting
 ;;ipython setting
 (setq
@@ -21,6 +28,7 @@
       '("--virtual-env" "~/workspace/python/myenv"))
 (add-hook 'python-mode-hook 'electric-indent-mode)
 (add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
+
 
 ;;;org mode setting
 ;;(add-to-list 'load-path "~/.emacs.d/customizations/htmlize")
@@ -69,3 +77,46 @@
 (setq org-export-with-sub-superscripts nil)
 ;;(add-hook 'message-mode-hook 'turn-on-orgstruct)
 ;;(add-hook 'message-mode-hook 'turn-on-orgstruct++)
+
+
+;; golang
+(setq gopackage '(go-mode))
+(dolist (package gopackage)
+  (unless (package-installed-p package)
+    (package-install package)))
+(add-hook 'go-mode-hook 'flycheck-mode)
+
+(let ((gobin (expand-file-name "~/mytools/go/bin")))
+  (setenv "PATH" (concat gobin  ":" (getenv "PATH")))
+  (add-to-list 'exec-path gobin))
+
+(let ((gopathbin (expand-file-name "~/workspace/go/bin")))
+  (setenv "PATH" (concat gopathbin  ":" (getenv "PATH")))
+  (add-to-list 'exec-path gopathbin))
+
+(setenv "GOPATH" "/home/tacy/workspace/go")
+(setenv "GOROOT" "/home/tacy/mytools/go")
+
+; Go Oracle
+(load-file "$GOPATH/src/code.google.com/p/go.tools/cmd/oracle/oracle.el")
+
+; Go autocomplete - gocode
+(load-file "$GOPATH/src/github.com/nsf/gocode/emacs/go-autocomplete.el")
+
+(defun my-go-mode-hook ()
+  ; Use goimports instead of go-fmt
+  (setq gofmt-command "goimports")
+  ; Call Gofmt before saving
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  ; Customize compile command to run go build
+  (if (not (string-match "go" compile-command))
+      (set (make-local-variable 'compile-command)
+           "go build -v && go test -v && go vet"))
+  ; Godef jump key binding
+  (local-set-key (kbd "M-.") 'godef-jump))
+
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+(add-hook 'go-mode-hook 'go-oracle-mode)
+
+(provide 'post-startup)
+;;; post-startup.el ends here
